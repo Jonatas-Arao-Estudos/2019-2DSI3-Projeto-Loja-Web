@@ -37,12 +37,61 @@ function atualizarCategoria($id,$nome){
 	}
 }
 
-function listarCategoria(){
+function listarCategoria($id){
 	$sql = 'SELECT * FROM categoria ORDER BY nome ASC';
+	if($id > 0){
+		$sql = 'SELECT * FROM categoria WHERE id ='.$id;
+	}
 	$res = $GLOBALS['conexao']->query($sql);
 	return $res;
 }
 
 function alert($msg){
 	echo '<script>alert("'.$msg.'");</script>';
+}
+
+function cadastrarProduto($nome,$descricao,$valor,$fabricante,$categoria){
+	$sql ='INSERT INTO produto VALUES(NULL,"'.$nome.'","'.$descricao.'","'.$valor.'","'.$fabricante.'","'.$categoria.'")';
+	$res = $GLOBALS['conexao']->query($sql);
+	if($res){
+		alert("Cadastrado com sucesso");
+	}
+	else{
+		alert("Erro ao cadastrar");
+	}
+}
+
+function excluirProduto($id){
+	$sql ='DELETE FROM produto WHERE id = '.$id;
+	$res = $GLOBALS['conexao']->query($sql);
+	if($res){
+		alert("Excluido com sucesso");
+	}
+	else{
+		alert("Erro ao excluir");
+	}
+}
+
+function atualizarProduto($id,$nome,$descricao,$valor,$fabricante,$categoria){
+	$sql ='UPDATE produto SET nome = "'.$nome.'" , descricao = "'.$descricao.'" , valor = "'.$valor.'" , fabricante = "'.$fabricante.'" , categoria = "'.$categoria.'" WHERE id = '.$id;
+	$res = $GLOBALS['conexao']->query($sql);
+	if($res){
+		alert("Atualizado com sucesso");
+	}
+	else{
+		alert("Erro ao atualizar");
+	}
+}
+
+function listarProduto($id){
+	$sql = 'SELECT * FROM produto ORDER BY nome ASC';
+	if($id > 0){
+		$sql = 'SELECT * FROM produto WHERE id ='.$id;
+	}
+	$res = $GLOBALS['conexao']->query($sql);
+	return $res;
+}
+
+function vai($pra_onde){
+	echo '<script>window.location="'.$pra_onde.'";</script>';
 }
