@@ -1,9 +1,9 @@
 <?php
-$conexao = new mysqli('localhost','root','usbw','loja');
-if(!$conexao){
-	echo 'Erro na sua conexao com banco';
-}
+include("conexao.php");
 
+//Funções para Banco de Dados
+
+//Categorias
 function cadastrarCategoria($nome){
 	$sql ='INSERT INTO categoria VALUES(NULL,"'.$nome.'")';
 	$res = $GLOBALS['conexao']->query($sql);
@@ -46,10 +46,7 @@ function listarCategoria($id){
 	return $res;
 }
 
-function alert($msg){
-	echo '<script>alert("'.$msg.'");</script>';
-}
-
+//Produto
 function cadastrarProduto($nome,$descricao,$valor,$fabricante,$categoria){
 	$sql ='INSERT INTO produto VALUES(NULL,"'.$nome.'","'.$descricao.'","'.$valor.'","'.$fabricante.'","'.$categoria.'")';
 	$res = $GLOBALS['conexao']->query($sql);
@@ -92,6 +89,42 @@ function listarProduto($id){
 	return $res;
 }
 
+//Funções de Include
+
+function includeHeader($titulo){
+	include("header.php");
+}
+
+//Funções de Utilidade
+
+function alert($msg){
+	echo '<script>alert("'.$msg.'");</script>';
+}
+
 function vai($pra_onde){
 	echo '<script>window.location="'.$pra_onde.'";</script>';
+}
+
+function bs4Toast($msg){
+	echo '
+	<div aria-live="polite" aria-atomic="true" class="position-relative">
+		<div class="position-absolute" style="top:-15px; right:20px;">
+			<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000" style="width:250px">
+				<div class="toast-header">
+					<strong class="mr-auto">Alerta</strong>
+					<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Fechar">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="toast-body">
+					'.$msg.'
+				</div>
+            </div>
+		</div>
+	</div>
+
+	<script>
+		$(".toast").toast("show");
+	</script>
+	';
 }
