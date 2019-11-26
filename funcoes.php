@@ -51,6 +51,8 @@ function cadastrarProduto($nome,$descricao,$valor,$fabricante,$categoria){
 	$sql ='INSERT INTO produto VALUES(NULL,"'.$nome.'","'.$descricao.'","'.$valor.'","'.$fabricante.'","'.$categoria.'")';
 	$res = $GLOBALS['conexao']->query($sql);
 	if($res){
+		//Serve para criar diretório
+		mkdir('img/'.$GLOBALS['conexao']->insert_id,0777);
 		alert("Cadastrado com sucesso");
 	}
 	else{
@@ -85,6 +87,22 @@ function listarProduto($id){
 	if($id > 0){
 		$sql = 'SELECT * FROM produto WHERE id ='.$id;
 	}
+	$res = $GLOBALS['conexao']->query($sql);
+	return $res;
+}
+//Foto
+function cadastrarFoto($produto,$foto){
+	$sql = 'INSERT INTO foto VALUES(null,'.$produto.',"'.$foto.'")';
+	$res = $GLOBALS['conexao']->query($sql);
+	if($res){
+		alert("Foto Cadastrada");
+	}else{
+		alert("Erro ao cadastrar foto");
+	}
+}
+
+function listarFoto($produto){
+	$sql = 'SELECT * FROM foto WHERE id_produto ='.$produto;
 	$res = $GLOBALS['conexao']->query($sql);
 	return $res;
 }

@@ -19,5 +19,6 @@ CREATE TABLE produto(
 CREATE TABLE foto(
 	id int primary key auto_increment,
 	id_produto int,
+	foto varchar(120),
 	FOREIGN KEY (id_produto) REFERENCES produto(id)
 );
