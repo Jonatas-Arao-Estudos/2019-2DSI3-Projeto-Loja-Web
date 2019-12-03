@@ -20,7 +20,7 @@
 		<div class="col-md-3">
 			<div class="row">
 				<form class="form-control">
-					<input class="form-control mr-sm-2" type="text"> 
+					<input class="form-control mr-sm-2" type="text" name="q"> 
 					<button class="btn btn-primary btn-large my-2 my-sm-0" type="submit">
 						Pesquisar
 					</button>
@@ -32,7 +32,9 @@
 						$todas = listarCategoria(0);
 						while($c = $todas->fetch_array()){
 							$link = '?cat='.$c['id'];
-							echo '<div class="card">
+							echo '<div class="card"';
+							echo isset($_GET['cat']) && $_GET['cat'] == $c['id'] ? ' style="background-color: darkblue"' : '';
+							echo '>
 									<div class="card-header">
 									<a class="card-link" href="'.$link.'">
 										 '.$c['nome'].'
@@ -61,9 +63,13 @@
 				$inicio = ($atual - 1) * $pp;
 
 				$sql = "SELECT * FROM produto";
-				$sql .= isset($_GET['cat']) ? "WHERE id_categoria =".$c : "";
-				$sql .= "LIMIT $inicio,$pp";
+				$sql .= isset($_GET['cat']) && $_GET['cat'] > 0 ? " WHERE id_categoria =".$c : "";
+				$sql .= " LIMIT $inicio,$pp";
+				$sql = isset($_GET['q']) ? 'SELECT * FROM produto WHERE nome LIKE "%'.$_GET['q'].'%"' : $sql;
 				$res = $GLOBALS['conexao']->query($sql);
+				$paginas = isset($_GET['q']) ? ceil(($res->num_rows)/$pp) : $paginas;
+				$sql .= isset($_GET['q']) ? " LIMIT $inicio,$pp" : "";
+				$res = isset($_GET['q']) ? $GLOBALS['conexao']->query($sql) : $res;
 
 				while($p = $res->fetch_array()){
 					echo '<div class="col-md-4">
@@ -96,7 +102,14 @@
 						for($i = 1; $i <= $paginas; $i++){
 							echo '
 							<li class="page-item">
-								<a class="page-link" href="?p='.$i.'">'.$i.'</a>
+								<a class="page-link"';
+							echo isset($_GET['p']) && $_GET['p'] == $i ? ' style="color: white; background-color: darkblue"' : '';
+							echo' href="?p='.$i;
+							echo isset($_GET['cat']) && $_GET['cat'] > 0 ? '&cat='.$c : "";
+							echo isset($_GET['q']) ? '&q='.$_GET['q'] : "";
+							echo
+								'
+								">'.$i.'</a>
 							</li>';
 						}
 						?>
