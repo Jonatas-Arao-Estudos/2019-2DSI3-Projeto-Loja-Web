@@ -2,11 +2,11 @@
 	include("funcoes.php");
 	if(isset($_POST['id'])){
 		atualizarProduto($_POST['id'],$_POST['nome'],$_POST['descricao'],$_POST['valor'],$_POST['fabricante'],$_POST['categoria']);
-		vai("produto.php?listar");
+		vai("produto.php");
 	}
 	else if(isset($_POST['nome'])){
 		cadastrarProduto($_POST['nome'],$_POST['descricao'],$_POST['valor'],$_POST['fabricante'],$_POST['categoria']);
-		vai("produto.php?listar");
+		vai("produto.php");
 	}
 	if(isset($_GET['editar'])){
 		$registros = listarProduto($_GET['editar']);
@@ -81,7 +81,6 @@
 			</form>
 		</div>
 		<?php
-				if(isset($_GET['listar'])){
 					if(mysqli_num_rows(listarProduto(0)) > 0){
 						echo '
 						<div class="col-md-6 mx-auto my-auto shadow p-3 bg-blue-grey-darken-3 text-light rounded-lg">
@@ -98,8 +97,14 @@
 								</thead>
 								<tbody>
 						';
-						$registros = listarProduto(0);
-						while ($pdt = $registros->fetch_array()) {
+
+						$pp = 5;
+						$res = listarProduto(0);
+						$sql = "SELECT * FROM produto ORDER BY nome ASC";
+						$paginaAtual = isset($_GET['p']) ? $_GET['p'] : 1;;
+
+						$registros = paginacao($pp, $res , $sql, $paginaAtual);
+						while ($pdt = $registros['res']->fetch_array()) {
 							echo '
 							<tr>
 								<th scope="row">'.$pdt['id'].'</th>
@@ -116,8 +121,22 @@
 						}
 						echo '
 								</tbody>
-							</table>
-						</div>
+							</table>';
+
+						echo '
+							<nav class="row">
+							  <ul class="pagination mx-auto shadow">';
+							for($i = 1; $i <= $registros['paginas']; $i++){
+								echo '
+								<li class="page-item">
+									<a class="page-link" href="?p='.$i.'">'.$i.'</a>
+								</li>';
+							}
+						echo '
+							  </ul>
+							</nav>';
+
+						echo '</div>
 						';
 					}
 					else{
@@ -128,10 +147,9 @@
 						</div>
 						';
 					}
-				}
-				else if(isset($_GET['excluir'])){
+				if(isset($_GET['excluir'])){
 					excluirProduto($_GET['excluir']);
-					vai("produto.php?listar");
+					vai("produto.php");
 				}
 			?>
 	</div>

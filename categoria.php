@@ -2,11 +2,11 @@
 	include("funcoes.php");
 	if(isset($_POST['id'])){
 		atualizarCategoria($_POST['id'],$_POST['nome']);
-		vai("categoria.php?listar");
+		vai("categoria.php?");
 	}
 	else if(isset($_POST['nome'])){
 		cadastrarCategoria($_POST['nome']);
-		vai("categoria.php?listar");
+		vai("categoria.php");
 	}
 	if(isset($_GET['editar'])){
 		$registros = listarCategoria($_GET['editar']);
@@ -44,7 +44,6 @@
 		</div>
 
 		<?php
-				if(isset($_GET['listar'])){
 					if(mysqli_num_rows(listarCategoria(0)) > 0){
 						echo '
 						<div class="col-md-5 mx-auto my-auto shadow p-3 bg-blue-grey-darken-3 text-light rounded-lg">
@@ -85,8 +84,7 @@
 						</div>
 						';
 					}
-				}
-				else if(isset($_GET['excluir'])){
+				if(isset($_GET['excluir'])){
 					excluirCategoria($_GET['excluir']);
 					vai("categoria.php?listar");
 				}

@@ -90,6 +90,15 @@ function listarProduto($id){
 	$res = $GLOBALS['conexao']->query($sql);
 	return $res;
 }
+
+function listarProdutoCategoria($categoria){
+	$sql = 'SELECT * FROM produto WHERE id_categoria = '.$categoria.' ORDER BY nome ASC';
+	if($categoria <=0){
+		$sql = 'SELECT * FROM produto  ORDER BY nome ASC';	
+	}	
+	$res = $GLOBALS['conexao']->query($sql);
+	return $res;
+}
 //Foto
 function cadastrarFoto($produto,$foto){
 	$sql = 'INSERT INTO foto VALUES(null,'.$produto.',"'.$foto.'")';
@@ -103,6 +112,12 @@ function cadastrarFoto($produto,$foto){
 
 function listarFoto($produto){
 	$sql = 'SELECT * FROM foto WHERE id_produto ='.$produto;
+	$res = $GLOBALS['conexao']->query($sql);
+	return $res;
+}
+
+function pesquisarProduto($nome){
+	$sql = 'SELECT * FROM produto WHERE nome like "%'.$nome.'%"';
 	$res = $GLOBALS['conexao']->query($sql);
 	return $res;
 }
@@ -145,4 +160,21 @@ function bs4Toast($msg){
 		$(".toast").toast("show");
 	</script>
 	';
+}
+
+function paginacao($pp, $res , $sql, $paginaAtual){
+	$total = $res->num_rows;		//total de itens
+	$paginas = ceil($total / $pp);  //definimos toral de páginas
+	//definindo o padrão de exibição da página 1
+	$atual = isset($paginaAtual) ? $paginaAtual : 1;
+	//conta que determina a regra de consulta sql
+	$inicio = ($atual - 1) * $pp;
+	$sql .= " LIMIT $inicio,$pp";
+	$resPag = $GLOBALS['conexao']->query($sql);
+	$paginas = isset($_GET['q']) ? ceil(($res->num_rows)/$pp) : $paginas;
+
+	return array(
+		"paginas" => $paginas ,
+		"res" => $resPag
+	);
 }
