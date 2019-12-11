@@ -155,11 +155,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="categoria.php" method="POST">
+                    <form id="frmCategoria" action="categoria.php" method="POST">
                         <fieldset>
                             <div class="form-group">
-                                <label for="nome">Adicionar Categoria</label>
-                                <input class="form-control shadow" type="text" name="nome" value="">
+                                <label for="categoriaNome">Adicionar Categoria</label>
+                                <input class="form-control shadow" type="text" name="categoriaNome" value="">
                             </div>
                         </fieldset>
                     </form>
@@ -184,31 +184,31 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST">
+                    <form id="frmProduto" method="POST">
                         <fieldset>
                             <div class="form-group">
-                                <label for="categoria">Categoria</label>
-                                <select class="form-control shadow" name="categoria"></select>
+                                <label for="produtoCategoria">Categoria</label>
+                                <select class="form-control shadow" name="produtoCategoria"></select>
                             </div>
 
                             <div class="form-group">
-                                <label for="nome">Nome</label>
-                                <input class="form-control shadow" type="text" name="nome" value="">
+                                <label for="produtoNome">Nome</label>
+                                <input class="form-control shadow" type="text" name="produtoNome" value="">
                             </div>
 
                             <div class="form-group">
-                                <label for="descricao">Descrição</label>
-                                <textarea class="form-control shadow" name="descricao"></textarea>
+                                <label for="produtoDescricao">Descrição</label>
+                                <textarea class="form-control shadow" name="produtoDescricao"></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="valor">Valor</label>
-                                <input class="form-control shadow" type="number" name="valor" value="" step=0.01>
+                                <label for="produtoValor">Valor</label>
+                                <input class="form-control shadow" type="number" name="produtoValor" value="" step=0.01>
                             </div>
 
                             <div class="form-group">
-                                <label for="fabricante">Fabricante</label>
-                                <input class="form-control shadow" type="text" name="fabricante" value="">
+                                <label for="produtoFabricante">Fabricante</label>
+                                <input class="form-control shadow" type="text" name="produtoFabricante" value="">
                             </div>
                         </fieldset>
                     </form>
@@ -233,7 +233,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" enctype="multipart/form-data">
+                    <form id="frmFotoProduto" method="POST" enctype="multipart/form-data">
                         <fieldset>
                             <div class="form-group">
                                 <div class="custom-file">
