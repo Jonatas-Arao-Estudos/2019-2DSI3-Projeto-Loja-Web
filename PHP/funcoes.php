@@ -122,46 +122,6 @@ function pesquisarProduto($nome){
 	return $res;
 }
 
-//Funções de Include
-
-function includeHeader($titulo){
-	include("header.php");
-}
-
-//Funções de Utilidade
-
-function alert($msg){
-	echo '<script>alert("'.$msg.'");</script>';
-}
-
-function vai($pra_onde){
-	echo '<script>window.location="'.$pra_onde.'";</script>';
-}
-
-function bs4Toast($msg){
-	echo '
-	<div aria-live="polite" aria-atomic="true" class="position-relative">
-		<div class="position-absolute" style="top:-15px; right:20px;">
-			<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000" style="width:250px">
-				<div class="toast-header">
-					<strong class="mr-auto">Alerta</strong>
-					<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Fechar">
-					<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="toast-body">
-					'.$msg.'
-				</div>
-            </div>
-		</div>
-	</div>
-
-	<script>
-		$(".toast").toast("show");
-	</script>
-	';
-}
-
 function paginacao($pp, $res , $sql, $paginaAtual){
 	$total = $res->num_rows;		//total de itens
 	$paginas = ceil($total / $pp);  //definimos toral de páginas
