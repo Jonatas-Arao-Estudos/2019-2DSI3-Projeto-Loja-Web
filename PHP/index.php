@@ -62,7 +62,13 @@
             <?php
                 if(isset($_GET['categoria'])){
                     $cat = listarCategoria($_GET['categoria'])->fetch_array();
-                    echo '<h1>'.$cat['nome'].'</h1>';
+                    echo '
+                    <h1>
+                        '.$cat['nome'].' - 
+                        <a class="btn btn-danger shadow" href="?excluirCategoria='.$cat['id'].'">Excluir Categoria</a> -
+                        <a class="btn btn-primary shadow" href="#" data-toggle="modal" data-target="#modalModCategoria" data-id='.$cat['id'].'>Editar Categoria</a>
+                    </h1>
+                    ';
                 }
                 elseif(isset($_GET['pesquisa'])){
                     echo '<h1>Resultados de: '.$_GET['pesquisa'].'</h1>';
@@ -97,10 +103,10 @@
                         <img src="https://www.layoutit.com/img/people-q-c-600-200-1.jpg" class="card-img">
                         <div class="card-img-overlay h-100 d-flex flex-column justify-content-end text-center">
                             <div class="bg-white p-3 rounded">
-                                <h5 class="card-title card-title-overlay">'.$pdt['nome'].' - <span
-                                        class="badge badge-secondary">R$ '.$pdt['valor'].'</span></h5>
+                                <h5 class="card-title card-title-overlay">'.utf8_encode($pdt['nome']).' - <span
+                                        class="badge badge-secondary">R$ '.utf8_encode($pdt['valor']).'</span></h5>
                                 <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
-                                    data-target="#modalProduto">Ver Mais</button>
+                                    data-target="#modalProduto" data-id='.utf8_encode($pdt['id']).'>Ver Mais</button>
                             </div>
                         </div>
                     </div>
@@ -156,8 +162,8 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content bg-blue-grey-darken-3 text-light shadow">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalProdutoLabel">Nome do Produto - <span
-                            class="badge badge-secondary">Preço</span></h5>
+                    <h5 class="modal-title" id="modalProdutoLabel"><span id="modalNomeProduto">Nome do Produto</span> - <span
+                            class="badge badge-secondary" id="modalPrecoProduto">Preço</span></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="text-light">&times;</span>
                     </button>
@@ -190,19 +196,16 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <p><span class="h5">Fabricante: </span>s</p>
-                            <p><span class="h5">Descrição: </span>s</p>
+                            <p><span class="h5">Fabricante: </span><span id="modalFabricanteProduto"></span></p>
+                            <p><span class="h5">Descrição: </span><span id="modalDescricaoProduto"></span></p>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="modal"
                         data-target="#modalModFoto">Adicionar Foto</button>
-                    <form method="post">
-                        <input type="hidden" name="id" value="1">
-                        <button type="submit" class="btn btn-danger">Excluir</button>
-                    </form>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal"
+                    <a id="modalExcluirProduto"><button type="button" class="btn btn-danger">Excluir</button></a>
+                    <button type="button" class="btn btn-primary" id="modalEditarProduto" data-dismiss="modal" data-toggle="modal"
                         data-target="#modalModProduto">Editar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 </div>
@@ -255,27 +258,38 @@
                         <fieldset>
                             <div class="form-group">
                                 <label for="produtoCategoria">Categoria</label>
-                                <select class="form-control shadow" name="produtoCategoria"></select>
+                                <select class="form-control shadow" name="produtoCategoria" id="produtoCategoria">
+                                    <?php
+                                       $categorias = listarCategoria(0);
+                                       while($cat = $categorias->fetch_array()){
+                                           echo '
+                                           <option value='.$cat['id'].'>'.$cat['nome'].'</option>
+                                           ';
+                                       }
+                                    ?>
+                                </select>
                             </div>
+
+                            <div id="produtoID"></div>
 
                             <div class="form-group">
                                 <label for="produtoNome">Nome</label>
-                                <input class="form-control shadow" type="text" name="produtoNome" value="">
+                                <input class="form-control shadow" type="text" name="produtoNome" id="produtoNome">
                             </div>
 
                             <div class="form-group">
                                 <label for="produtoDescricao">Descrição</label>
-                                <textarea class="form-control shadow" name="produtoDescricao"></textarea>
+                                <textarea class="form-control shadow" name="produtoDescricao" id="produtoDescricao"></textarea>
                             </div>
 
                             <div class="form-group">
                                 <label for="produtoValor">Valor</label>
-                                <input class="form-control shadow" type="number" name="produtoValor" value="" step=0.01>
+                                <input class="form-control shadow" type="number" name="produtoValor" id="produtoValor" step=0.01>
                             </div>
 
                             <div class="form-group">
                                 <label for="produtoFabricante">Fabricante</label>
-                                <input class="form-control shadow" type="text" name="produtoFabricante" value="">
+                                <input class="form-control shadow" type="text" name="produtoFabricante" id="produtoFabricante">
                             </div>
                         </fieldset>
                     </form>
@@ -318,6 +332,56 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $('#modalProduto').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var modal = $(this);
+            var parametros = {
+                    "id": id
+                    };
+            $.ajax({
+                    type: "post",
+                    url:"ajax.php?acao=listarProduto",
+                    data: parametros,
+                    dataType: "json",
+                    success: function(data){
+                        modal.find('#modalExcluirProduto').attr("href", "?excluirProduto="+data.produto.id);
+                        modal.find('#modalEditarProduto').attr("data-id", data.produto.id);
+                        modal.find('#modalNomeProduto').text(data.produto.nome);
+                        modal.find('#modalPrecoProduto').text("R$ "+data.produto.valor);
+                        modal.find('#modalFabricanteProduto').text(data.produto.fabricante);
+                        modal.find('#modalDescricaoProduto').text(data.produto.descricao);
+                    }
+                });
+            
+        });
+        $('#modalModProduto').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var modal = $(this); 
+            if(id != undefined){
+                var parametros = {
+                    "id": id
+                    };
+                $.ajax({
+                    type: "post",
+                    url:"ajax.php?acao=listarProduto",
+                    data: parametros,
+                    dataType: "json",
+                    success: function(data){
+                        $('#frmProduto #produtoID').html('<input type="hidden" name="produtoId" value="'+id+'">');
+                        $('#produtoCategoria option[value='+ data.produto.id_categoria +']').attr({ selected : "selected" });
+                        $('#produtoNome').val(data.produto.nome);
+                        $('#produtoValor').val(data.produto.valor);
+                        $('#produtoFabricante').val(data.produto.fabricante);
+                        $('#produtoDescricao').val(data.produto.descricao);
+                    }
+                });
+            }           
+        })
+    </script>
 </body>
 
 </html>
