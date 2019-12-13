@@ -1,3 +1,6 @@
+<?php
+	include('funcoes.php');
+?>
 <!DOCTYPE html>
 <html>
 
@@ -28,7 +31,16 @@
                             Categorias
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="#">Categoria 1</a>
+
+                            <?php
+                            $categorias = listarCategoria(0);
+                            while($cat = $categorias->fetch_array()){
+                                echo '
+                                <a class="dropdown-item" href="?categoria='.$cat['id'].'">'.$cat['nome'].'</a>
+                                ';
+                            }
+                        ?>
+
                         </div>
                     </li>
                     <a class="nav-link" href="#" data-toggle="modal" data-target="#modalModCategoria">Adicionar
@@ -37,7 +49,7 @@
                         Produto</a>
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" aria-label="Search">
+                    <input class="form-control mr-sm-2" name="pesquisa" type="search" aria-label="Search">
                     <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Pesquisar</button>
                 </form>
             </div>
@@ -46,41 +58,93 @@
 
     <section class="container mt-4">
         <div>
-            <h1>Todos os Produtos</h1>
+
+            <?php
+                if(isset($_GET['categoria'])){
+                    $cat = listarCategoria($_GET['categoria'])->fetch_array();
+                    echo '<h1>'.$cat['nome'].'</h1>';
+                }
+                elseif(isset($_GET['pesquisa'])){
+                    echo '<h1>Resultados de: '.$_GET['pesquisa'].'</h1>';
+                }
+                else{
+                    echo '<h1>Todos os Produtos</h1>';
+                }    
+            ?>
+
         </div>
 
         <div class="row">
-            <div class="col-lg-3 col-md-4 col-6 mt-3">
-                <div class="card border-0 shadow product-card">
-                    <img src="img/3/250px-Star_Wars_Episódio_III_A_Vingança_dos_Sith.jpg" class="card-img">
-                    <div class="card-img-overlay h-100 d-flex flex-column justify-content-end text-center">
-                        <div class="bg-white p-3 rounded">
-                            <h5 class="card-title card-title-overlay">Produto - <span
-                                    class="badge badge-secondary">Preço</span></h5>
-                            <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
-                                data-target="#modalProduto">Ver Mais</button>
+
+            <?php
+            $categoriaAtual = isset($_GET['categoria']) ? $_GET['categoria'] : 0;
+            $pesquisa = isset($_GET['pesquisa']) ? $_GET['pesquisa'] : null;
+            $produtosPorPagina = 8;
+            $produtos = listarProdutoCategoria($categoriaAtual);
+            $sql =  "SELECT * FROM produto";
+            $sql .= $categoriaAtual > 0 ? ' WHERE id_categoria ='.$categoriaAtual : '';
+            $sql .= $pesquisa != null ? ' WHERE nome LIKE "%'.$pesquisa.'%"' : '';
+            $sql .= ' ORDER BY nome ASC';
+            $produtos = ($categoriaAtual > 0) || ($pesquisa != null) ? $GLOBALS['conexao']->query($sql) : $produtos;
+            $paginaAtual = isset($_GET['paginaAtual']) ? $_GET['paginaAtual'] : 1;
+
+            $registros = paginacao($produtosPorPagina,$produtos,$sql,$paginaAtual);
+
+            while($pdt = $registros['res']->fetch_array()){
+                echo '
+                <div class="col-lg-3 col-md-4 col-6 mt-3" id="pdt'.$pdt['id'].'">
+                    <div class="card border-0 shadow product-card">
+                        <img src="https://www.layoutit.com/img/people-q-c-600-200-1.jpg" class="card-img">
+                        <div class="card-img-overlay h-100 d-flex flex-column justify-content-end text-center">
+                            <div class="bg-white p-3 rounded">
+                                <h5 class="card-title card-title-overlay">'.$pdt['nome'].' - <span
+                                        class="badge badge-secondary">R$ '.$pdt['valor'].'</span></h5>
+                                <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
+                                    data-target="#modalProduto">Ver Mais</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                ';
+            }
+        ?>
+
         </div>
 
         <div class="row py-3">
             <nav class="mx-auto" aria-label="Page navigation example">
                 <ul class="pagination shadow">
-                    <li class="page-item">
-                        <a class="page-link text-secondary" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link text-secondary" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link text-secondary" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link text-secondary" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link text-secondary" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
+                    <?php
+                        $paginaAtual = isset($_GET['paginaAtual']) ? $_GET['paginaAtual'] : 1;
+                        $anterior = $paginaAtual > 1 ? $paginaAtual - 1 : 0;
+                        $proximo = $paginaAtual < $registros['paginas'] ? $paginaAtual + 1 : 0;
+                        $link = '?';
+                        $link .= $categoriaAtual > 0 ? 'categoria='.$categoriaAtual.'&' : '';
+                        $link .= $pesquisa != null ? 'pesquisa='.$pesquisa.'&' : '';
+
+                        if($anterior != 0){
+                            echo '
+                            <li class="page-item">
+                                <a class="page-link text-secondary" href="'.$link.'paginaAtual='.$anterior.'" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            ';
+                        }
+                        for($i = 1; $i <= $registros['paginas']; $i++){
+                            $indicador = $paginaAtual == $i ? 'bg-dark text-light' : 'text-secondary';
+                            echo '<li class="page-item"><a class="page-link '.$indicador.'" href="'.$link.'paginaAtual='.$i.'">'.$i.'</a></li>';
+                        }
+                        if($proximo != 0){
+                            echo '   
+                            <li class="page-item">
+                                <a class="page-link text-secondary" href="'.$link.'paginaAtual='.$proximo.'" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            ';
+                        } 
+                    ?>
                 </ul>
             </nav>
         </div>
@@ -134,7 +198,10 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="modal"
                         data-target="#modalModFoto">Adicionar Foto</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Excluir</button>
+                    <form method="post">
+                        <input type="hidden" name="id" value="1">
+                        <button type="submit" class="btn btn-danger">Excluir</button>
+                    </form>
                     <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal"
                         data-target="#modalModProduto">Editar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -158,7 +225,7 @@
                     <form id="frmCategoria" action="categoria.php" method="POST">
                         <fieldset>
                             <div class="form-group">
-                                <label for="categoriaNome">Adicionar Categoria</label>
+                                <label for="categoriaNome">Nome</label>
                                 <input class="form-control shadow" type="text" name="categoriaNome" value="">
                             </div>
                         </fieldset>

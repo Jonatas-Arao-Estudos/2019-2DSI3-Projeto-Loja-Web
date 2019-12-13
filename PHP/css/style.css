@@ -32,3 +32,6 @@
 .bg-blue-grey-darken-4{
     background-color: #263238;    
 }
+.product-card{
+    min-height: 15em;
+}
