@@ -18,7 +18,7 @@
 <body class="bg-blue-grey-lighten-5">
     <nav class="navbar navbar-expand-lg navbar-dark bg-blue-grey-darken-3 shadow">
         <div class="container">
-            <a class="navbar-brand" href="#">Projeto Loja</a>
+            <a class="navbar-brand" href="index.php">Projeto Loja</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
                 aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -66,7 +66,7 @@
                     <h1>
                         '.$cat['nome'].' - 
                         <a class="btn btn-danger shadow" href="?excluirCategoria='.$cat['id'].'">Excluir Categoria</a> -
-                        <a class="btn btn-primary shadow" href="#" data-toggle="modal" data-target="#modalModCategoria" data-id='.$cat['id'].'>Editar Categoria</a>
+                        <button class="btn btn-primary shadow" href="#" data-toggle="modal" data-target="#modalModCategoria" data-id='.$cat['id'].'>Editar Categoria</button>
                     </h1>
                     ';
                 }
@@ -205,8 +205,7 @@
                     <button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="modal"
                         data-target="#modalModFoto">Adicionar Foto</button>
                     <a id="modalExcluirProduto"><button type="button" class="btn btn-danger">Excluir</button></a>
-                    <button type="button" class="btn btn-primary" id="modalEditarProduto" data-dismiss="modal" data-toggle="modal"
-                        data-target="#modalModProduto">Editar</button>
+                    <span id="modalEditarProduto"></span>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
@@ -225,17 +224,18 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="frmCategoria" action="categoria.php" method="POST">
+                    <form id="frmCategoria" method="POST">
                         <fieldset>
                             <div class="form-group">
                                 <label for="categoriaNome">Nome</label>
-                                <input class="form-control shadow" type="text" name="categoriaNome" value="">
+                                <input class="form-control shadow" type="text" name="categoriaNome" id="categoriaNome" value="">
                             </div>
+                            <div id="categoriaID"></div>
                         </fieldset>
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Salvar</button>
+                </form>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -292,10 +292,10 @@
                                 <input class="form-control shadow" type="text" name="produtoFabricante" id="produtoFabricante">
                             </div>
                         </fieldset>
-                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Salvar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </form>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -317,16 +317,13 @@
                     <form id="frmFotoProduto" method="POST" enctype="multipart/form-data">
                         <fieldset>
                             <div class="form-group">
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="produtoFoto" name="produtoFoto">
-                                    <label class="custom-file-label" for="produtoFoto">Selecione a Foto</label>
-                                </div>
+                                    <input type="file" class="form-control" id="produtoFoto" name="produtoFoto">
                             </div>
                         </fieldset>
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Salvar</button>
+                </form>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -348,7 +345,7 @@
                     dataType: "json",
                     success: function(data){
                         modal.find('#modalExcluirProduto').attr("href", "?excluirProduto="+data.produto.id);
-                        modal.find('#modalEditarProduto').attr("data-id", data.produto.id);
+                        modal.find('#modalEditarProduto').html('<button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#modalModProduto" data-id='+data.produto.id+'>Editar</button>');
                         modal.find('#modalNomeProduto').text(data.produto.nome);
                         modal.find('#modalPrecoProduto').text("R$ "+data.produto.valor);
                         modal.find('#modalFabricanteProduto').text(data.produto.fabricante);
@@ -371,16 +368,46 @@
                     data: parametros,
                     dataType: "json",
                     success: function(data){
-                        $('#frmProduto #produtoID').html('<input type="hidden" name="produtoId" value="'+id+'">');
-                        $('#produtoCategoria option[value='+ data.produto.id_categoria +']').attr({ selected : "selected" });
-                        $('#produtoNome').val(data.produto.nome);
-                        $('#produtoValor').val(data.produto.valor);
-                        $('#produtoFabricante').val(data.produto.fabricante);
-                        $('#produtoDescricao').val(data.produto.descricao);
+                        modal.find('#frmProduto #produtoID').html('<input type="hidden" name="produtoId" value="'+id+'">');
+                        modal.find('#produtoCategoria option[value='+ data.produto.id_categoria +']').attr({ selected : "selected" });
+                        modal.find('#produtoNome').val(data.produto.nome);
+                        modal.find('#produtoValor').val(data.produto.valor);
+                        modal.find('#produtoFabricante').val(data.produto.fabricante);
+                        modal.find('#produtoDescricao').val(data.produto.descricao);
                     }
                 });
+            }else{
+                modal.find('#frmProduto #produtoID').html(null);
+                modal.find('#produtoCategoria option[value=1]').attr({ selected : "selected" });
+                modal.find('#produtoNome').val(null);
+                modal.find('#produtoValor').val(null);
+                modal.find('#produtoFabricante').val(null);
+                modal.find('#produtoDescricao').val(null);
             }           
-        })
+        });
+        $('#modalModCategoria').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var modal = $(this); 
+            if(id != undefined){
+                var parametros = {
+                    "id": id
+                    };
+                $.ajax({
+                    type: "post",
+                    url:"ajax.php?acao=listarCategoria",
+                    data: parametros,
+                    dataType: "json",
+                    success: function(data){
+                        modal.find('#frmCategoria #categoriaID').html('<input type="hidden" name="categoriaId" value="'+id+'">');
+                        modal.find('#categoriaNome').val(data.categoria.nome);
+                    }
+                });
+            }else{
+                modal.find('#frmCategoria #categoriaID').html(null);
+                modal.find('#categoriaNome').val(data.produto.nome);
+            }           
+        });
     </script>
 </body>
 
