@@ -22,7 +22,7 @@
 		excluirCategoria($_GET['excluirCategoria']);
 		vai("index.php");
     }	
-    if($_POST['nomeFotoId']){
+    if(isset($_POST['nomeFotoId'])){
         $formatosPermitidos = array("png", "jpeg", "jpg", "gif","PNG", "JPEG", "JPG", "GIF");
         $extensao = pathinfo($_FILES['produtoFoto']['name'], PATHINFO_EXTENSION);
 
