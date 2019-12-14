@@ -21,7 +21,27 @@
     if(isset($_GET['excluirCategoria'])){
 		excluirCategoria($_GET['excluirCategoria']);
 		vai("index.php");
-	}	
+    }	
+    if($_POST){
+        $formatosPermitidos = array("png", "jpeg", "jpg", "gif","PNG", "JPEG", "JPG", "GIF");
+        $extensao = pathinfo($_FILES['produtoFoto']['name'], PATHINFO_EXTENSION);
+
+        if(in_array($extensao, $formatosPermitidos)){
+            $destino = 'img/'.$_POST['nomeFotoId'].'/'.$_FILES['produtoFoto']['name'];
+            if(move_uploaded_file($_FILES['produtoFoto']['tmp_name'], $destino)){
+                cadastrarFoto($_POST['nomeFotoId'],$destino);
+                vai("index.php");
+            }else{
+                mkdir('img/'.$_POST['nomeFotoId'],0777,true);
+                if(move_uploaded_file($_FILES['produtoFoto']['tmp_name'], $destino)){
+                    cadastrarFoto($_POST['nomeFotoId'],$destino);
+                    vai("index.php");
+                }
+            }
+        }else{
+            alert("Formato Inválido");
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -119,15 +139,23 @@
             $registros = paginacao($produtosPorPagina,$produtos,$sql,$paginaAtual);
 
             while($pdt = $registros['res']->fetch_array()){
+                $fotoProduto = listarFoto($pdt['id']);
+                if($fotoProduto->num_rows > 0){
+                    $foto = $fotoProduto->fetch_array();
+                    $urlFoto = $foto['foto'];
+                }else{
+                    $urlFoto = "https://www.layoutit.com/img/people-q-c-600-200-1.jpg";
+                }
+
                 echo '
                 <div class="col-lg-3 col-md-4 col-6 mt-3" id="pdt'.$pdt['id'].'">
                     <div class="card border-0 shadow product-card">
-                        <img src="https://www.layoutit.com/img/people-q-c-600-200-1.jpg" class="card-img">
+                        <img src="'.$urlFoto.'" class="card-img">
                         <div class="card-img-overlay h-100 d-flex flex-column justify-content-end text-center">
-                            <div class="bg-white p-3 rounded">
+                            <div class="bg-alfa p-3 rounded">
                                 <h5 class="card-title card-title-overlay">'.utf8_encode($pdt['nome']).' - <span
                                         class="badge badge-secondary">R$ '.utf8_encode($pdt['valor']).'</span></h5>
-                                <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
+                                <button type="button" class="btn btn-outline-dark" data-toggle="modal"
                                     data-target="#modalProduto" data-id='.utf8_encode($pdt['id']).'>Ver Mais</button>
                             </div>
                         </div>
@@ -195,14 +223,7 @@
                         <div class="col-6">
                             <div class="img-thumbnail shadow">
                                 <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <img src="img/3/250px-Star_Wars_Episódio_III_A_Vingança_dos_Sith.jpg"
-                                                class="d-block w-100">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="img/3/wp3054761.jpg" class="d-block w-100">
-                                        </div>
+                                    <div class="carousel-inner" id="carouselProduto">
                                     </div>
                                     <a class="carousel-control-prev" href="#carouselExampleFade" role="button"
                                         data-slide="prev">
@@ -224,8 +245,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="modal"
-                        data-target="#modalModFoto">Adicionar Foto</button>
+                    <span id="modalFotoProduto"></span>
                     <a id="modalExcluirProduto"><button type="button" class="btn btn-danger">Excluir</button></a>
                     <span id="modalEditarProduto"></span>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -338,13 +358,14 @@
                 <div class="modal-body">
                     <form id="frmFotoProduto" method="POST" enctype="multipart/form-data">
                         <fieldset>
+                            <div id="nomeFotoID"></div>
                             <div class="form-group">
-                                    <input type="file" class="form-control" id="produtoFoto" name="produtoFoto">
+                                <input type="file" class="form-control" id="produtoFoto" name="produtoFoto" accept="image/*">
                             </div>
                         </fieldset>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Salvar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
                 </form>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
@@ -365,13 +386,31 @@
                     url:"ajax.php?acao=listarProduto",
                     data: parametros,
                     dataType: "json",
-                    success: function(data){
+                    success: function(data){      
+                        modal.find('#modalFotoProduto').html('<button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="modal" data-target="#modalModFoto" data-id='+data.produto.id+'>Adicionar Foto</button>')
                         modal.find('#modalExcluirProduto').attr("href", "?excluirProduto="+data.produto.id);
                         modal.find('#modalEditarProduto').html('<button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#modalModProduto" data-id='+data.produto.id+'>Editar</button>');
                         modal.find('#modalNomeProduto').text(data.produto.nome);
                         modal.find('#modalPrecoProduto').text("R$ "+data.produto.valor);
                         modal.find('#modalFabricanteProduto').text(data.produto.fabricante);
                         modal.find('#modalDescricaoProduto').text(data.produto.descricao);
+                    }
+                });
+                $.ajax({
+                    type: "post",
+                    url:"ajax.php?acao=listarFoto",
+                    data: parametros,
+                    dataType: "json",
+                    success: function(data){
+                        $carousel = "";
+                        $.each(data.fotos,function(i,dados){
+                            if(i == 0){
+                                $carousel += '<div class="carousel-item active"><img src="'+dados.url+'" class="d-block w-100"> </div>';
+                            }else{
+                                $carousel += '<div class="carousel-item"><img src="'+dados.url+'" class="d-block w-100"> </div>';
+                            }
+                        });
+                        $('#carouselProduto').html($carousel);
                     }
                 });
             
@@ -429,6 +468,12 @@
                 modal.find('#frmCategoria #categoriaID').html(null);
                 modal.find('#categoriaNome').val(null);
             }           
+        });
+        $('#modalModFoto').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var modal = $(this);         
+            modal.find('#frmFotoProduto #nomeFotoID').html('<input type="hidden" name="nomeFotoId" value="'+id+'">');
         });
     </script>
 </body>

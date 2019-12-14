@@ -31,5 +31,29 @@ if($_POST){
                 }
             echo json_encode($registros);
         break;
+
+        case 'listarFoto':
+            $id = $_POST['id'];
+            $consulta = ListarFoto($id);
+            $registros = array(
+                'fotos'=>array()
+            );
+            if($consulta->num_rows >0){
+                $i = 0;
+                while($foto = $consulta->fetch_array()){
+                    $registros['fotos'][$i] = array(
+                        'id_produto' => $foto['id_produto'],
+                        'url' => $foto['foto']
+                    );
+                    $i++;
+                }
+            }else{
+                $registros['fotos'][0] = array(
+                    'id_produto' => $id,
+                    'url' =>"https://www.layoutit.com/img/people-q-c-600-200-1.jpg"
+                );
+            }
+            echo json_encode($registros);
+        break;
     }
 }

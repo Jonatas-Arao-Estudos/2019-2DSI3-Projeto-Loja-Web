@@ -35,3 +35,6 @@
 .product-card{
     min-height: 15em;
 }
+.bg-alfa{
+    background-color:rgba(255,255,255, 0.8);
+}
