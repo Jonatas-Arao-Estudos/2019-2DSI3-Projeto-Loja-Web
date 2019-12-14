@@ -52,7 +52,7 @@ function cadastrarProduto($nome,$descricao,$valor,$fabricante,$categoria){
 	$res = $GLOBALS['conexao']->query($sql);
 	if($res){
 		//Serve para criar diretório
-		mkdir('img/'.$GLOBALS['conexao']->insert_id,0777);
+		mkdir('img/'.$GLOBALS['conexao']->insert_id,0777,true);
 		alert("Cadastrado com sucesso");
 	}
 	else{
