@@ -1,26 +1,26 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.4.2
--- http://www.phpmyadmin.net
+-- version 4.8.4
+-- https://www.phpmyadmin.net/
 --
--- Máquina: localhost
--- Data de Criação: 27-Nov-2019 às 00:31
--- Versão do servidor: 5.6.13
--- versão do PHP: 5.4.17
+-- Host: 127.0.0.1:3306
+-- Generation Time: 14-Dez-2019 às 03:59
+-- Versão do servidor: 5.7.24
+-- versão do PHP: 7.3.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de Dados: `loja`
+-- Database: `loja`
 --
-CREATE DATABASE IF NOT EXISTS `loja` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `loja`;
 
 -- --------------------------------------------------------
 
@@ -28,11 +28,12 @@ USE `loja`;
 -- Estrutura da tabela `categoria`
 --
 
+DROP TABLE IF EXISTS `categoria`;
 CREATE TABLE IF NOT EXISTS `categoria` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `categoria`
@@ -51,13 +52,14 @@ INSERT INTO `categoria` (`id`, `nome`) VALUES
 -- Estrutura da tabela `foto`
 --
 
+DROP TABLE IF EXISTS `foto`;
 CREATE TABLE IF NOT EXISTS `foto` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_produto` int(11) DEFAULT NULL,
   `foto` varchar(120) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_produto` (`id_produto`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `foto`
@@ -66,7 +68,11 @@ CREATE TABLE IF NOT EXISTS `foto` (
 INSERT INTO `foto` (`id`, `id_produto`, `foto`) VALUES
 (4, 5, 'img/5/4.jpg'),
 (5, 5, 'img/5/lol.png'),
-(6, 5, 'img/5/verde.jpg');
+(6, 5, 'img/5/verde.jpg'),
+(7, 40, 'img/40/12382-0.jpg.jpg'),
+(8, 32, 'img/32/1960977582570e657ec2bbd5.74439504.jpg'),
+(9, 13, 'img/13/agua_sanitaria-2017.png'),
+(10, 13, 'img/13/download.jpg');
 
 -- --------------------------------------------------------
 
@@ -74,6 +80,7 @@ INSERT INTO `foto` (`id`, `id_produto`, `foto`) VALUES
 -- Estrutura da tabela `produto`
 --
 
+DROP TABLE IF EXISTS `produto`;
 CREATE TABLE IF NOT EXISTS `produto` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
@@ -83,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `produto` (
   `id_categoria` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_categoria` (`id_categoria`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=42 ;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `produto`
@@ -124,7 +131,6 @@ INSERT INTO `produto` (`id`, `nome`, `descricao`, `valor`, `fabricante`, `id_cat
 (36, 'MAMÃO', 'Unid', '2.99', '..', 4),
 (37, 'Limão', 'Kg', '1.99', '..', 4),
 (38, 'Maracujá', 'Kg', '9.99', '..', 4),
-(39, 'Abacaxi', 'Unid', '3.99', '..', 4),
 (40, 'Abacaxi', 'Unid', '3.99', '..', 4),
 (41, 'Morango', 'Caixa', '3.75', '...', 3);
 
@@ -143,6 +149,7 @@ ALTER TABLE `foto`
 --
 ALTER TABLE `produto`
   ADD CONSTRAINT `produto_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`);
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

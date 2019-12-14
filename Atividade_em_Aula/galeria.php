@@ -9,7 +9,6 @@ if($_POST){
 		echo 'Tipo: '.$_FILES['foto']['type'];
 		echo '<br>Tamanho: '.$_FILES['foto']['size'];
 		echo '<br>Nome: '.$_FILES['foto']['name'];
-
 	}
 }
 ?>
