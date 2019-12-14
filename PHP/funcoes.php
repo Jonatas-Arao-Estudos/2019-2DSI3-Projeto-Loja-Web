@@ -72,7 +72,7 @@ function excluirProduto($id){
 }
 
 function atualizarProduto($id,$nome,$descricao,$valor,$fabricante,$categoria){
-	$sql ='UPDATE produto SET nome = "'.$nome.'" , descricao = "'.$descricao.'" , valor = "'.$valor.'" , fabricante = "'.$fabricante.'" , categoria = "'.$categoria.'" WHERE id = '.$id;
+	$sql ='UPDATE produto SET nome = "'.$nome.'" , descricao = "'.$descricao.'" , valor = "'.$valor.'" , fabricante = "'.$fabricante.'" , id_categoria = "'.$categoria.'" WHERE id = '.$id;
 	$res = $GLOBALS['conexao']->query($sql);
 	if($res){
 		alert("Atualizado com sucesso");
@@ -137,4 +137,12 @@ function paginacao($pp, $res , $sql, $paginaAtual){
 		"paginas" => $paginas ,
 		"res" => $resPag
 	);
+}
+
+function alert($msg){
+	echo '<script>alert("'.$msg.'");</script>';
+}
+
+function vai($pra_onde){
+	echo '<script>window.location="'.$pra_onde.'";</script>';	
 }

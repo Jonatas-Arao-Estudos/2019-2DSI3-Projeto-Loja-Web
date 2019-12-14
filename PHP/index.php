@@ -1,5 +1,27 @@
 <?php
-	include('funcoes.php');
+    include('funcoes.php');
+    if(isset($_POST['produtoId'])){
+        atualizarProduto($_POST['produtoId'],utf8_decode($_POST['produtoNome']),utf8_decode($_POST['produtoDescricao']),$_POST['produtoValor'],utf8_decode($_POST['produtoFabricante']),utf8_decode($_POST['produtoCategoria']));
+        vai("index.php");
+	}
+	else if(isset($_POST['produtoNome'])){
+        cadastrarProduto($_POST['produtoNome'],utf8_decode($_POST['produtoNome']),utf8_decode($_POST['produtoDescricao']),$_POST['produtoValor'],utf8_decode($_POST['produtoFabricante']),utf8_decode($_POST['produtoCategoria']));
+        vai("index.php");
+    }	
+    if(isset($_GET['excluirProduto'])){
+        excluirProduto($_GET['excluirProduto']);
+        vai("index.php");
+    }
+    if(isset($_POST['categoriaId'])){
+		atualizarCategoria($_POST['categoriaId'],$_POST['categoriaNome']);
+	}
+	else if(isset($_POST['categoriaNome'])){
+		cadastrarCategoria($_POST['categoriaNome']);
+    }
+    if(isset($_GET['excluirCategoria'])){
+		excluirCategoria($_GET['excluirCategoria']);
+		vai("index.php");
+	}	
 ?>
 <!DOCTYPE html>
 <html>
@@ -368,7 +390,7 @@
                     data: parametros,
                     dataType: "json",
                     success: function(data){
-                        modal.find('#frmProduto #produtoID').html('<input type="hidden" name="produtoId" value="'+id+'">');
+                        modal.find('#frmProduto #produtoID').html('<input type="hidden" name="produtoId" value="'+data.produto.id+'">');
                         modal.find('#produtoCategoria option[value='+ data.produto.id_categoria +']').attr({ selected : "selected" });
                         modal.find('#produtoNome').val(data.produto.nome);
                         modal.find('#produtoValor').val(data.produto.valor);
@@ -399,13 +421,13 @@
                     data: parametros,
                     dataType: "json",
                     success: function(data){
-                        modal.find('#frmCategoria #categoriaID').html('<input type="hidden" name="categoriaId" value="'+id+'">');
+                        modal.find('#frmCategoria #categoriaID').html('<input type="hidden" name="categoriaId" value="'+data.categoria.id+'">');
                         modal.find('#categoriaNome').val(data.categoria.nome);
                     }
                 });
             }else{
                 modal.find('#frmCategoria #categoriaID').html(null);
-                modal.find('#categoriaNome').val(data.produto.nome);
+                modal.find('#categoriaNome').val(null);
             }           
         });
     </script>
