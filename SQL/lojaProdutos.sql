@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: 14-Dez-2019 às 03:59
+-- Generation Time: 14-Dez-2019 às 04:14
 -- Versão do servidor: 5.7.24
 -- versão do PHP: 7.3.1
 
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `loja`
 --
+CREATE DATABASE IF NOT EXISTS `loja` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `loja`;
 
 -- --------------------------------------------------------
 
@@ -70,9 +72,7 @@ INSERT INTO `foto` (`id`, `id_produto`, `foto`) VALUES
 (5, 5, 'img/5/lol.png'),
 (6, 5, 'img/5/verde.jpg'),
 (7, 40, 'img/40/12382-0.jpg.jpg'),
-(8, 32, 'img/32/1960977582570e657ec2bbd5.74439504.jpg'),
-(9, 13, 'img/13/agua_sanitaria-2017.png'),
-(10, 13, 'img/13/download.jpg');
+(8, 32, 'img/32/1960977582570e657ec2bbd5.74439504.jpg');
 
 -- --------------------------------------------------------
 
