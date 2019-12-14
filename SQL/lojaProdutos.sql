@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: 14-Dez-2019 às 04:14
+-- Generation Time: 14-Dez-2019 às 20:52
 -- Versão do servidor: 5.7.24
 -- versão do PHP: 7.3.1
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `categoria` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `categoria`
@@ -46,7 +46,8 @@ INSERT INTO `categoria` (`id`, `nome`) VALUES
 (2, 'PADARIA'),
 (3, 'BEBIDAS'),
 (4, 'FRUTAS'),
-(5, 'CARRO');
+(5, 'CARRO'),
+(7, 'Teste');
 
 -- --------------------------------------------------------
 
@@ -61,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `foto` (
   `foto` varchar(120) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_produto` (`id_produto`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `foto`
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `produto` (
   `id_categoria` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_categoria` (`id_categoria`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `produto`
@@ -142,13 +143,13 @@ INSERT INTO `produto` (`id`, `nome`, `descricao`, `valor`, `fabricante`, `id_cat
 -- Limitadores para a tabela `foto`
 --
 ALTER TABLE `foto`
-  ADD CONSTRAINT `foto_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produto` (`id`);
+  ADD CONSTRAINT `foto_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produto` (`id`) ON DELETE CASCADE;
 
 --
 -- Limitadores para a tabela `produto`
 --
 ALTER TABLE `produto`
-  ADD CONSTRAINT `produto_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`);
+  ADD CONSTRAINT `produto_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
