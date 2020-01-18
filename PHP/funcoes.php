@@ -61,9 +61,14 @@ function cadastrarProduto($nome,$descricao,$valor,$fabricante,$categoria){
 }
 
 function excluirProduto($id){
+	$consulta = ListarFoto($id);
 	$sql ='DELETE FROM produto WHERE id = '.$id;
 	$res = $GLOBALS['conexao']->query($sql);
 	if($res){
+		while($foto = $consulta->fetch_array()){
+			unlink($foto['foto']);
+		}
+		rmdir('img/'.$id);
 		alert("Excluido com sucesso");
 	}
 	else{

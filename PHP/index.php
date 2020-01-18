@@ -5,12 +5,12 @@
         vai("index.php");
 	}
 	else if(isset($_POST['produtoNome'])){
-        cadastrarProduto($_POST['produtoNome'],$_POST['produtoNome'],$_POST['produtoDescricao'],$_POST['produtoValor'],$_POST['produtoFabricante'],$_POST['produtoCategoria']);
+        cadastrarProduto($_POST['produtoNome'],$_POST['produtoDescricao'],$_POST['produtoValor'],$_POST['produtoFabricante'],$_POST['produtoCategoria']);
         vai("index.php");
     }	
     if(isset($_GET['excluirProduto'])){
         excluirProduto($_GET['excluirProduto']);
-        vai("index.php");
+        // vai("index.php");
     }
     if(isset($_POST['categoriaId'])){
 		atualizarCategoria($_POST['categoriaId'],$_POST['categoriaNome']);
