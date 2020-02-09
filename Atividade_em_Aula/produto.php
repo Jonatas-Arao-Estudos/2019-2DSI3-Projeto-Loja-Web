@@ -36,10 +36,10 @@ include("funcoes.php");
 			$nome = $c['nome'];
 		}
 	?>
-	Produto: <input type="text" name="produto" value="<?php //echo $nome;?>"><br>
-	Descricao: <textarea name="descricao" value="<?php// echo $descricao;?>"></textarea><br>
-	Valor: <input type="number" step="0.01" name="valor" value="<?php// echo $valor;?>"><br>
-	Fabricante: <input type="text" name="fabricante" value="<?php //echo $fabricante;?>"><br>
+	Produto: <input type="text" name="produto" value="<?php echo $nome;?>"><br>
+	Descricao: <textarea name="descricao" value="<?php echo $descricao;?>"></textarea><br>
+	Valor: <input type="number" step="0.01" name="valor" value="<?php echo $valor;?>"><br>
+	Fabricante: <input type="text" name="fabricante" value="<?php echo $fabricante;?>"><br>
 	<br>
 	<input type="submit" value="Cadastrar">
 </form>
