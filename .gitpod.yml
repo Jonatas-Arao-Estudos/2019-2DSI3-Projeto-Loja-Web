@@ -1,7 +1,5 @@
 tasks:
-  - command: cd SQL/
-    command: mysql -u root -p < lojaProdutos.sql;
-    command: cd ..
+  - init: mysql -u root -p < lojaProdutos.sql;
     command: apachectl start
 image:
   file: .gitpod.Dockerfile
