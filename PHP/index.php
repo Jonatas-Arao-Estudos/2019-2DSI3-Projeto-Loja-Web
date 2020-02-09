@@ -220,7 +220,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-md-6">
                             <div class="img-thumbnail shadow">
                                 <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
                                     <div class="carousel-inner" id="carouselProduto">
@@ -238,7 +238,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-md-6">
                             <p><span class="h5">Fabricante: </span><span id="modalFabricanteProduto"></span></p>
                             <p><span class="h5">Descrição: </span><span id="modalDescricaoProduto"></span></p>
                         </div>
