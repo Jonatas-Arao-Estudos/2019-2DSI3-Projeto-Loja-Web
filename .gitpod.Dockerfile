@@ -2,6 +2,8 @@ FROM gitpod/workspace-mysql
                     
 USER gitpod
 
+ENV APACHE_DOCROOT_IN_REPO="PHP"
+
 # Install custom tools, runtime, etc. using apt-get
 # For example, the command below would install "bastet" - a command line tetris clone:
 #
