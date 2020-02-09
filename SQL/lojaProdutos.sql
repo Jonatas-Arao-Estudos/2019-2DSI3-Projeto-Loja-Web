@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: 18-Jan-2020 às 19:09
+-- Generation Time: 18-Jan-2020 às 19:37
 -- Versão do servidor: 5.7.24
 -- versão do PHP: 7.3.1
 
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `loja`
 --
+CREATE DATABASE IF NOT EXISTS `loja` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `loja`;
 
 -- --------------------------------------------------------
 

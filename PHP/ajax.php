@@ -10,10 +10,10 @@ if($_POST){
                     'produto' => array(
                         'id' => $produto['id'],
                         'id_categoria' => $produto['id_categoria'],
-                        'nome' => utf8_encode($produto['nome']),
+                        'nome' => $produto['nome'],
                         'valor' => $produto['valor'],
-                        'fabricante' => utf8_encode($produto['fabricante']),
-                        'descricao' => utf8_encode($produto['descricao'])
+                        'fabricante' => $produto['fabricante'],
+                        'descricao' => $produto['descricao']
                     ));
                 }
             echo json_encode($registros);
@@ -25,8 +25,8 @@ if($_POST){
                 while($categoria = $consulta->fetch_array()){
                     $registros = array(
                     'categoria' => array(
-                        'id' => utf8_encode($categoria['id']),
-                        'nome' => utf8_encode($categoria['nome'])
+                        'id' => $categoria['id'],
+                        'nome' => $categoria['nome']
                     ));
                 }
             echo json_encode($registros);
