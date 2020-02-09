@@ -1,6 +1,8 @@
 tasks:
-  - init: echo "Replace me with a build script for the project."
-    command: echo "Replace me with omething that should run on every start, or just
-      remove me entirely."
+  - init: echo "Iniciando Projeto"
+    command: cd SQL/
+    command: mysql -u root -p < lojaProdutos.sql;
+    command: cd ..
+    command: apachectl start
 image:
   file: .gitpod.Dockerfile
